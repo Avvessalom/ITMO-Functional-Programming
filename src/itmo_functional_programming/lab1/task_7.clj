@@ -19,8 +19,13 @@
   (take n (filter is-prime? (range))))
 
 (defn n-th-prime-number-filtered [num]
-  (last (take num (filter is-prime? (range))))
-  )
+  (last (take num (filter is-prime? (range)))))
+
+(defn n-th-prime-number-filtered-with-macro [n]
+  (->> (range)
+       (filter is-prime?)
+       (take n)
+       (last)))
 
 (defn n-th-prime-number-loop [n]
   (loop [iter 1
