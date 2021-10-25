@@ -15,7 +15,7 @@
       [lex]
       (loop [s (vec lex)
              d (sorted-set)]
-        (let [i (- (int (peek s)) 48)                       ; code of nine
+        (let [i (- (int (peek s)) 48)
               d (conj d i)]
           (if (== (last d) i)
             (recur (pop s) d)
@@ -25,7 +25,18 @@
 (defn lex-perm-stupid [num]
   (first (drop (dec num) (next-lex "" digits))))
 
+(defn lex-perm-stupid-with-macro [num]
+  (->> (next-lex "" digits)
+       (drop (dec num))
+       (first)))
+
 (defn task-24-report []
   (do
     (println (format "Task 24 solutions:
-                * stupid:   %s" (lex-perm-stupid 1000000)))))
+                * stupid: %s
+                * stupid with macro: %s" (lex-perm-stupid 1000000) (lex-perm-stupid-with-macro 1000000)))
+    (println "Results are equal:"
+             (apply = [
+                       (time (lex-perm-stupid 1000000))
+                       (time (lex-perm-stupid-with-macro 1000000))
+                       ]))))
