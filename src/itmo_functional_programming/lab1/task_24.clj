@@ -30,13 +30,24 @@
        (drop (dec num))
        (first)))
 
+(defn factorial [n]
+  (reduce *' (range 1 (inc n))))
+
+(defn lex-perm-module [n s]
+  ((if (= (count s) 1) s (println s))
+   (let [q (quot n (factorial (dec (count s))))
+         r (rem n (factorial (dec (count s))))]
+    (cons (nth (seq s) q) (lex-perm-module r (concat (take q s) (drop (inc q) s)))))))
+
 (defn task-24-report []
   (do
     (println (format "Task 24 solutions:
                 * stupid: %s
-                * stupid with macro: %s" (lex-perm-stupid 1000000) (lex-perm-stupid-with-macro 1000000)))
+                * stupid with macro: %s
+                * module: %s" (lex-perm-stupid 1000000) (lex-perm-stupid-with-macro 1000000) (lex-perm-module 1000000 digits)))
     (println "Results are equal:"
              (apply = [
                        (time (lex-perm-stupid 1000000))
                        (time (lex-perm-stupid-with-macro 1000000))
+                       (time (lex-perm-module 1000000 digits))
                        ]))))
