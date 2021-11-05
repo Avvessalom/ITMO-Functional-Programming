@@ -7,7 +7,7 @@
   "
   )
 
-(def digits (sorted-set 0 1 2 3 4 5 6 7 8 9))
+(def digits '(0 1 2 3 4 5 6 7 8 9))
 
 (defn next-lex [substr digits]
   (let [lex (apply str substr digits)]
@@ -34,10 +34,11 @@
   (reduce *' (range 1 (inc n))))
 
 (defn lex-perm-module [n s]
-  ((if (= (count s) 1) s (println s))
-   (let [q (quot n (factorial (dec (count s))))
-         r (rem n (factorial (dec (count s))))]
-    (cons (nth (seq s) q) (lex-perm-module r (concat (take q s) (drop (inc q) s)))))))
+  (if (= (count s) 1)
+     s
+     (let [q (quot n (factorial (dec (count s))))
+            r (rem n (factorial (dec (count s))))]
+        (cons (nth s q) (lex-perm-module r (into [] (concat (take q s) (drop (inc q) s))))))))
 
 (defn task-24-report []
   (do
