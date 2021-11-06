@@ -40,15 +40,12 @@
             r (rem n (factorial (dec (count s))))]
         (cons (nth s q) (lex-perm-module r (into [] (concat (take q s) (drop (inc q) s))))))))
 
+(defn lex-perm-module-answer [n]
+  (apply str (lex-perm-module (dec n) digits)))
+
 (defn task-24-report []
   (do
     (println (format "Task 24 solutions:
                 * stupid: %s
                 * stupid with macro: %s
-                * module: %s" (lex-perm-stupid 1000000) (lex-perm-stupid-with-macro 1000000) (lex-perm-module 1000000 digits)))
-    (println "Results are equal:"
-             (apply = [
-                       (time (lex-perm-stupid 1000000))
-                       (time (lex-perm-stupid-with-macro 1000000))
-                       (time (lex-perm-module 1000000 digits))
-                       ]))))
+                * module: %s" (time (lex-perm-stupid 1000000)) (time (lex-perm-stupid-with-macro 1000000)) (time (lex-perm-module-answer 1000000))))))
