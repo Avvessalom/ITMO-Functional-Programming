@@ -42,4 +42,4 @@
   (testing (is (= (seq full-set) (seq etalon)))))
 
 (deftest set-cons-test
-  (testing (is (= (cons 1 full-set) (cons 1 etalon)))))
+  (testing (is (= (.cons full-set 1) (conj etalon 1)))))
