@@ -15,10 +15,10 @@
 ; 10. Intersection is idempotent;                 V
 ; 11. Union is idempotent;                        V
 
-(def A (hash-set 1 1 1 2 2 2 3 3 5))
-(def B (hash-set 1 2 3 4 4 4 12 12 12 8 8 52))
-(def C (hash-set 11 1 16 22 2 22 34 3 555))
-(def Empty (hash-set))
+(def A (my-hash-set 1 1 1 2 2 2 3 3 5))
+(def B (my-hash-set 1 2 3 4 4 4 12 12 12 8 8 52))
+(def C (my-hash-set 11 1 16 22 2 22 34 3 555))
+(def Empty (my-hash-set))
 
 (defn intersection
   ([set1] set1)

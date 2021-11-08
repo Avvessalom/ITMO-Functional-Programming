@@ -5,21 +5,25 @@
 (defn list-replicate [num list]
   (vec (mapcat (partial repeat num) list)))
 
-
 (defn TODO [] (throw (Exception. "Not Implemented")))
 
 (deftype MyHashSet [impl]
   IPersistentCollection
   (seq [_] (keys impl))
   (cons [_ key] (if (contains? impl key)
-                 (MyHashSet. (apply hash-map (list-replicate 2 (keys impl))))
-                 (MyHashSet. (assoc impl key key))))
+                  (MyHashSet. (apply hash-map (list-replicate 2 (keys impl))))
+                  (MyHashSet. (assoc impl key key))))
   (empty [_] (MyHashSet. (empty hash-map)))
+  (equiv [_ o] (if (not (instance? IPersistentSet o))
+                  false
+                  (if (not= (count o) (count impl))
+                     false
+                     (empty? (filter #(not (contains? impl %1)  ) (vec o))))))
 
   IPersistentSet
   (disjoin [_ key] (if (contains? impl key)
                      (MyHashSet. (dissoc impl key))
-                     impl))
+                     (MyHashSet. (apply hash-map (list-replicate 2 (keys impl))))))
   (contains [_ key] (contains? impl key))
   (get [_ key] (get impl key))
 
@@ -43,7 +47,6 @@
 
 (def example (my-hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7))
 (def hashset (hash-set 1 1 2 2 3 3 4 4 5 5 6 6 8))
-(def hm (apply hash-map '(1 1 2 2 3 4 5 6)))
 
 (defn print-example []
   (println "example: " example)
