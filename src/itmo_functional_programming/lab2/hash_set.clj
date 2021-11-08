@@ -15,10 +15,10 @@
                   (MyHashSet. (assoc impl key key))))
   (empty [_] (MyHashSet. (empty hash-map)))
   (equiv [_ o] (if (not (instance? IPersistentSet o))
-                  false
-                  (if (not= (count o) (count impl))
-                     false
-                     (empty? (filter #(not (contains? impl %1)  ) (vec o))))))
+                 false
+                 (if (not= (count o) (count impl))
+                   false
+                   (empty? (filter #(not (contains? impl %1)) (vec o))))))
 
   IPersistentSet
   (disjoin [_ key] (if (contains? impl key)

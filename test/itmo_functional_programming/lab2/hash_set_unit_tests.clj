@@ -1,10 +1,13 @@
 (ns itmo-functional-programming.lab2.hash-set-unit-tests
   (:require [clojure.test :refer :all]
-            [itmo-functional-programming.lab2.hash-set :refer :all]))
+            [itmo-functional-programming.lab2.hash-set :refer :all]
+            [itmo-functional-programming.lab2.hash-set-property-based-tests :refer :all]))
 
 (def full-set (my-hash-set 1 1 1 2 2 3 3 4 4 5 5 5 6 6 7 8 9 9 9 9 9 9 9))
 (def etalon (hash-set 1 1 1 2 2 3 3 4 4 5 5 5 6 6 7 8 9 9 9 9 9 9 9))
 (def empty-set (my-hash-set))
+(def a (my-hash-set 1 1 2 3))
+(def b (my-hash-set 2 2 3 4))
 
 (deftest my-set-test
   (testing (is (= full-set (my-hash-set 1 2 3 4 5 6 7 8 9)))))
@@ -43,3 +46,13 @@
 
 (deftest set-cons-test
   (testing (is (= (.cons full-set 1) (conj etalon 1)))))
+
+(deftest union-operation-test
+  (testing
+    (is (= (union a b) (my-hash-set 1 2 3 4)))
+    (is (not= (union a b) (my-hash-set 1 2 3 5)))))
+
+(deftest intersection-operation-test
+  (testing
+    (is (= (intersection a b) (my-hash-set 2 3)))
+    (is (not= (intersection a b) (my-hash-set 1 2 3 4)))))
