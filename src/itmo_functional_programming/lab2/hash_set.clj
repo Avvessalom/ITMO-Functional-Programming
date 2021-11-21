@@ -1,15 +1,16 @@
 (ns itmo-functional-programming.lab2.hash-set
-  (:import (clojure.lang IPersistentSet Counted IPersistentCollection ISeq)
-           (java.io Writer)))
+  (:import (clojure.lang IPersistentSet Seqable IHashEq)))
 
 (defn list-replicate [num list]
   (vec (mapcat (partial repeat num) list)))
 
-(defn TODO [] (throw (Exception. "Not Implemented")))
-
 (deftype MyHashSet [impl]
-  IPersistentCollection
-  (seq [_] (keys impl))
+  IPersistentSet
+  (disjoin [_ key] (if (contains? impl key)
+                     (MyHashSet. (dissoc impl key))
+                     (MyHashSet. (apply hash-map (list-replicate 2 (keys impl))))))
+  (contains [_ key] (contains? impl key))
+  (get [_ key] (get impl key))
   (cons [_ key] (if (contains? impl key)
                   (MyHashSet. (apply hash-map (list-replicate 2 (keys impl))))
                   (MyHashSet. (assoc impl key key))))
@@ -18,32 +19,20 @@
                  false
                  (if (not= (count o) (count impl))
                    false
-                   (empty? (filter #(not (contains? impl %1)) (vec o))))))
-
-  IPersistentSet
-  (disjoin [_ key] (if (contains? impl key)
-                     (MyHashSet. (dissoc impl key))
-                     (MyHashSet. (apply hash-map (list-replicate 2 (keys impl))))))
-  (contains [_ key] (contains? impl key))
-  (get [_ key] (get impl key))
-
-  ISeq
-  (first [_] (first (keys impl)))
-  (next [_] (next (keys impl)))
-  (more [_] (rest (keys impl)))
-  Object
-  (toString [_] (str (keys impl)))
-
-  Counted
+                   ;(empty? (filter #(not (contains? impl %1)) (vec o))))))
+                   (every? #(contains? impl %) o))))
   (count [_] (count impl))
+
+  Seqable
+  (seq [_] (keys impl))
+
+  IHashEq
+  (hasheq [_] (inc (hash impl)))
   )
 
-(defmethod print-method MyHashSet [s, ^Writer w]
-  (.write w (str "#{" s "}")))
-
 (defn my-hash-set
-  ([] (MyHashSet. (hash-map)))
-  ([& keys] (MyHashSet. (apply hash-map (list-replicate 2 keys)))))
+  ([] (->MyHashSet (hash-map)))
+  ([& keys] (->MyHashSet (apply hash-map (list-replicate 2 keys)))))
 
 (def example (my-hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7))
 (def hashset (hash-set 1 1 2 2 3 3 4 4 5 5 6 6 8))
