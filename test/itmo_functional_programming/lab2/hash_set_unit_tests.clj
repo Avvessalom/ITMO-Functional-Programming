@@ -3,56 +3,84 @@
             [itmo-functional-programming.lab2.hash-set :refer :all]
             [itmo-functional-programming.lab2.hash-set-property-based-tests :refer :all]))
 
-(def full-set (my-hash-set 1 1 1 2 2 3 3 4 4 5 5 5 6 6 7 8 9 9 9 9 9 9 9))
-(def etalon (hash-set 1 1 1 2 2 3 3 4 4 5 5 5 6 6 7 8 9 9 9 9 9 9 9))
-(def empty-set (my-hash-set))
-(def a (my-hash-set 1 1 2 3))
-(def b (my-hash-set 2 2 3 4))
-
 (deftest my-set-test
-  (testing (is (= full-set (my-hash-set 1 2 3 4 5 6 7 8 9)))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        fake-set (my-hash-set 2 2)]
+    (is (= set-for-test (my-hash-set 1 1 2)))
+    (is (not= set-for-test fake-set))))
 
 (deftest set-first-test
-  (testing (is (= (first full-set) (first etalon)))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        true-set (hash-set 1 1 2)
+        fake-set (my-hash-set 2 2)]
+    (is (= (first set-for-test) (first true-set)))
+    (is (not= (first set-for-test) (first fake-set)))))
 
-(deftest full-set-count-test
-  (testing (is (= 0 (count empty-set)))))
-
-(deftest full-set-count-test
-  (testing (is (= 9 (count full-set)))))
+(deftest set-count-test
+  (let [empty-set (my-hash-set)
+        set-for-test (my-hash-set 1 1 2)]
+    (is (= 0 (count empty-set)))
+    (is (not= 1 (count empty-set)))
+    (is (= 2 (count set-for-test)))
+    (is (not= 0 (count set-for-test)))))
 
 (deftest set-next-test
-  (testing (is (= (next full-set) (next etalon)))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        true-set (hash-set 1 1 2)
+        fake-set (my-hash-set 1 1)]
+    (is (= (next set-for-test) (next true-set)))
+    (is (not= (next set-for-test) (next fake-set)))))
 
 (deftest set-more-test
-  (testing (is (= (rest full-set) (rest etalon)))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        true-set (hash-set 1 1 2)
+        fake-set (my-hash-set 2 2)]
+    (is (= (rest set-for-test) (rest true-set)))
+    (is (not= (rest set-for-test) (rest fake-set)))))
 
 (deftest set-get-test
-  (testing (is (= (get full-set 1) 1))))
+  (let [set-for-test (my-hash-set 1 1 2)]
+    (is (= (get set-for-test 1) 1))
+    (is (not= (get set-for-test 1) 2))
+    (is (not= (get set-for-test 3) 3))))
 
 (deftest set-contains-test
-  (testing
-    (is (contains? full-set 1))
-    (is (not (contains? full-set 11)))))
+  (let [set-for-test (my-hash-set 1 1 2)]
+    (is (contains? set-for-test 1))
+    (is (not (contains? set-for-test 11)))))
 
 (deftest set-disjoin-test
-  (testing (is (= (disj full-set 1) (disj etalon 1)))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        true-set (hash-set 1 1 2)]
+    (is (= (disj set-for-test 1) (disj true-set 1)))))
 
 (deftest set-empty-test
-  (testing (is (= (empty full-set) empty-set))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        empty-set (my-hash-set)]
+    (is (= (empty set-for-test) empty-set))
+    (is (not= (empty set-for-test) set-for-test))))
 
 (deftest set-seq-test
-  (testing (is (= (seq full-set) (seq etalon)))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        true-set (hash-set 1 1 2)]
+    (is (= (seq set-for-test) (seq true-set)))
+    (is (= (seq set-for-test) (list 1 2)))))
 
 (deftest set-cons-test
-  (testing (is (= (.cons full-set 1) (conj etalon 1)))))
+  (let [set-for-test (my-hash-set 1 1 2)
+        true-set (hash-set 1 1 2)]
+    (is (= (.cons set-for-test 1) (conj true-set 1)))
+    (is (= (.cons set-for-test 3) (conj true-set 3)))
+    (is (not= (.cons set-for-test 1) (conj set-for-test 4)))))
 
 (deftest union-operation-test
-  (testing
+  (let [a (my-hash-set 1 1 2 3)
+        b (my-hash-set 2 2 3 4)]
     (is (= (union a b) (my-hash-set 1 2 3 4)))
     (is (not= (union a b) (my-hash-set 1 2 3 5)))))
 
 (deftest intersection-operation-test
-  (testing
+  (let [a (my-hash-set 1 1 2 3)
+        b (my-hash-set 2 2 3 4)]
     (is (= (intersection a b) (my-hash-set 2 3)))
     (is (not= (intersection a b) (my-hash-set 1 2 3 4)))))
