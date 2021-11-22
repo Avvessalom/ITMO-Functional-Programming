@@ -5,8 +5,6 @@
 (defn list-replicate [num list]
   (vec (mapcat (partial repeat num) list)))
 
-(defn TODO [] (throw (Exception. "Not Implemented")))
-
 (deftype MyHashSet [impl]
   IPersistentCollection
   (seq [_] (keys impl))
@@ -47,6 +45,25 @@
 
 (def example (my-hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7))
 (def hashset (hash-set 1 1 2 2 3 3 4 4 5 5 6 6 8))
+
+(defn intersection
+  ([set1] set1)
+  ([set1 set2]
+   (if (< (count set2) (count set1))
+     (recur set2 set1)
+     (reduce (fn [result item]
+               (if (contains? set2 item)
+                 result
+                 (disj result item)))
+             set1 set1))))
+
+(defn union
+  ([] #{})
+  ([set1] set1)
+  ([set1 set2]
+   (if (< (count set1) (count set2))
+     (reduce conj set2 set1)
+     (reduce conj set1 set2))))
 
 (defn print-example []
   (println "example: " example)
