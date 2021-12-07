@@ -1,6 +1,7 @@
 (ns itmo-functional-programming.lab2.hash-set
   (:import (clojure.lang IPersistentSet Counted IPersistentCollection ISeq)
-           (java.io Writer)))
+           (java.io Writer))
+  (:require [itmo-functional-programming.lab2.hash-map :refer :all]))
 
 (defn list-replicate [num list]
   (vec (mapcat (partial repeat num) list)))
@@ -33,15 +34,14 @@
   (toString [_] (str (keys impl)))
 
   Counted
-  (count [_] (count impl))
-  )
+  (count [_] (count impl)))
 
 (defmethod print-method MyHashSet [s, ^Writer w]
   (.write w (str "#{" s "}")))
 
 (defn my-hash-set
   ([] (MyHashSet. (hash-map)))
-  ([& keys] (MyHashSet. (apply hash-map (list-replicate 2 keys)))))
+  ([& keys] (MyHashSet. (my-hash-map (apply hash-map (list-replicate 2 keys))))))
 
 (def example (my-hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7))
 (def hashset (hash-set 1 1 2 2 3 3 4 4 5 5 6 6 8))
