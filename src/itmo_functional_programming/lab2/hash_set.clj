@@ -41,10 +41,15 @@
 
 (defn my-hash-set
   ([] (MyHashSet. (hash-map)))
-  ([& keys] (MyHashSet. (my-hash-map (apply hash-map (list-replicate 2 keys))))))
+  ([& keys] (MyHashSet. (apply hash-map (list-replicate 2 keys)))))
 
 (def example (my-hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7))
 (def hashset (hash-set 1 1 2 2 3 3 4 4 5 5 6 6 8))
+
+(defn- bubble-max-key
+  [k coll]
+  (let [max (apply max-key k coll)]
+    (cons max (remove #(identical? max %) coll))))
 
 (defn intersection
   ([set1] set1)
@@ -55,7 +60,10 @@
                (if (contains? set2 item)
                  result
                  (disj result item)))
-             set1 set1))))
+             set1 set1)))
+  ([s1 s2 & sets]
+   (let [bubbled-sets (bubble-max-key #(- (count %)) (conj sets s2 s1))]
+     (reduce intersection (first bubbled-sets) (rest bubbled-sets)))))
 
 (defn union
   ([] #{})
@@ -63,7 +71,10 @@
   ([set1 set2]
    (if (< (count set1) (count set2))
      (reduce conj set2 set1)
-     (reduce conj set1 set2))))
+     (reduce conj set1 set2)))
+  ([s1 s2 & sets]
+   (let [bubbled-sets (bubble-max-key count (conj sets s2 s1))]
+     (reduce into (first bubbled-sets) (rest bubbled-sets)))))
 
 (defn print-example []
   (println "example: " example)
