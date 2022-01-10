@@ -12,7 +12,7 @@
   (cons [_ key] (if (contains? impl key)
                   (MyHashSet. (apply hash-map (list-replicate 2 (keys impl))))
                   (MyHashSet. (assoc impl key key))))
-  (empty [_] (MyHashSet. (empty hash-map)))
+  (empty [_] (MyHashSet. (empty my-hash-map)))
   (equiv [_ o] (if (not (instance? IPersistentSet o))
                  false
                  (if (not= (count o) (count impl))
@@ -41,10 +41,10 @@
 
 (defn my-hash-set
   ([] (MyHashSet. (hash-map)))
-  ([& keys] (MyHashSet. (apply hash-map (list-replicate 2 keys)))))
+  ([& keys] (MyHashSet. (my-hash-map (apply hash-map keys)))))
 
-(def example (my-hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7))
-(def hashset (hash-set 1 1 2 2 3 3 4 4 5 5 6 6 8))
+(def example (my-hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7 ))
+(def hashset (hash-set 1 1 2 2 3 3 4 4 5 5 6 6 6 7))
 
 (defn- bubble-max-key
   [k coll]
@@ -98,14 +98,14 @@
   (println "example contains: " (.contains example 1))
   (println "hashset contains: " (contains? hashset 1))
   (println "----------------------------")
-  (println "example disjoin: " (disj example 1))
-  (println "hashset disjoin: " (disj hashset 1))
-  (println "----------------------------")
   (println "example empty: " (empty example))
   (println "hashset empty: " (empty hashset))
+  (println "----------------------------")
+  (println "example seq: " (seq example))
+  (println "hashset seq: " (seq hashset))
   (println "----------------------------")
   (println "example cons: " (.cons example 99))
   (println "hashset cons: " (cons hashset (seq '(99))))
   (println "----------------------------")
-  (println "example seq: " (seq example))
-  (println "hashset seq: " (seq hashset)))
+  (println "example disjoin: " (disj example 1))
+  (println "hashset disjoin: " (disj hashset 1)))
