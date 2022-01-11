@@ -31,13 +31,6 @@
     (is (= (next map-for-test) (next true-map)))
     (is (not= (next map-for-test) (next fake-map)))))
 
-(deftest map-more-test
-  (let [map-for-test (my-hash-map {1 2 3 4})
-        true-map (hash-map 1 2 3 4)
-        fake-map (my-hash-map {5 6 7 8})]
-    (is (= (rest map-for-test) (rest true-map)))
-    (is (not= (rest map-for-test) (rest fake-map)))))
-
 (deftest map-empty-test
   (let [map-for-test (my-hash-map {1 2 3 4})
         empty-map (my-hash-map)]
@@ -45,7 +38,5 @@
     (is (not= (empty map-for-test) map-for-test))))
 
 (deftest map-seq-test
-  (let [map-for-test (my-hash-map {1 2 3 4})
-        true-map (hash-map 1 2 3 4)]
-    (is (= (seq map-for-test) (seq true-map)))
-    (is (= (seq map-for-test) (list 1 2)))))
+  (let [map-for-test (my-hash-map {1 2 3 4})]
+    (is (= (seq map-for-test) (list 1 2 3 4)))))

@@ -13,10 +13,10 @@
 (declare ->MyHashMap)
 (deftype MyHashMap [src]
   IPersistentMap
-  (without [_ key] (remove #{:1} (list src)))
+  (without [_ key] (dissoc key (list src)))
 
   Seqable
-  (seq [_] (seq src))
+  (seq [_] (mapcat list (map #(.getKey %) (seq src)) (map #(.getValue %) (seq src))))
 
   ILookup
   (valAt [_ k]
@@ -35,7 +35,7 @@
   (count [_] (count src)))
 
 (defmethod print-method MyHashMap [m, ^Writer w]
-  (.write w (str "{" (keys m) "}")))
+  (.write w (str "{" (mapcat list (map #(.getKey %) (seq m)) (map #(.getValue %) (seq m))) "}")))
 
 (defn my-hash-map
   ([] (->MyHashMap nil))
