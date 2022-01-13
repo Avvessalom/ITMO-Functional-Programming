@@ -1,9 +1,32 @@
-(ns itmo-functional-programming.lab3.main)
-(require '[clojure.string :as str])
+(ns itmo-functional-programming.lab3.main
+  (:require [itmo-functional-programming.lab3.lagrange :refer :all]
+            [clojure.string :as str]))
+
+(def function-points (ref []))
+(def user-points (ref []))
+
+(defn add-function-point [line]
+  (let [split (vec (.split line ","))
+        [x_s y_s & _] split
+        x (Double/parseDouble x_s)
+        y (Double/parseDouble y_s)]
+    (println "Adding new function point: X:" x ", Y:" y)
+    (-> function-points
+        (alter conj [x y])
+        (dosync))))
+
+(defn add-user-point [line]
+  (let [split (vec (.split line ","))
+        [x_s & _] split
+        x (Double/parseDouble x_s)]
+    (println "Adding new user point: " x)
+    (-> user-points
+        (alter conj x)
+        (dosync))))
 
 (defn read-line-and-return []
   (let [in (str/trim (read-line))]
-    (println in)))
+    in))
 
 (defn menu [{:keys [prompt options]}]
   (let [options (map (fn [o idx]
@@ -33,28 +56,33 @@
               (= in "1")
               (do
                 (println "Enter points like \"x,y\": ")
-                (read-line-and-return)
+                (add-function-point (read-line-and-return))
                 (recur))
 
               (= in "2")
               (do
-                (println "Enter points for prediction like \"x,y\": ")
-                (read-line-and-return)
+                (println "Enter points for prediction like \"x\": ")
+                (add-user-point (read-line-and-return))
                 (recur))
 
               (= in "3")
               (do
-                (println "Prediction sobstvenno")
+                (println "Prediction for" @user-points ": ")
+                (print (lagrange-interpolator @function-points @user-points))
                 (recur))
 
               (= in "4")
               (do
-                (println "Pozsrit' to4e4ki")
+                (print "Function points: ")
+                (println @function-points)
+                (print "User points: ")
+                (println @user-points)
                 (recur))
 
-              :else
-              (first (filter #(= in (:id %)) options)))))))
+              (= in "5")
+              :cancelled
+              )))))
 
 (defn -main []
   (menu {:prompt  "Choose command"
-         :options ["Add point" "Add point for prediction" "Predict" "Watch points" {:id "h" :text "Help"}]}))
+         :options ["Add point" "Add point for prediction" "Predict" "Watch points" "Exit"]}))
