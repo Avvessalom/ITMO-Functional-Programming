@@ -22,3 +22,6 @@
       (reduce +
               (map-indexed #(* (numerator-f %1 x xs) %2)
                            (xs-denom xs ys xs))))))
+
+(defn lagrange-interpolator [func-point user-points]
+  (mapv (lagrange func-point) user-points))
