@@ -1,18 +1,18 @@
 (ns itmo-functional-programming.lab3.lagrange)
 
-(defn numerator-f [i x s]
+(defn numerator-f [i x xs]
   (reduce-kv #(if (== i %2)
                 %1
                 (* %1 (- x %3)))
              1
-             s))
+             xs))
 
 (defn xs-denom
-  [x y xs]
-  (mapv (fn [x y]
-          (/ y (reduce #(if (== x %2)
+  [x y]
+  (mapv (fn [fx fy]
+          (/ fy (reduce #(if (== fx %2)
                           %1
-                          (* %1 (- x %2))) 1 xs)))
+                          (* %1 (- fx %2))) 1 x)))
         x y))
 
 (defn lagrange [points]
@@ -21,7 +21,7 @@
     (fn [x]
       (reduce +
               (map-indexed #(* (numerator-f %1 x xs) %2)
-                           (xs-denom xs ys xs))))))
+                           (xs-denom xs ys))))))
 
 (defn lagrange-interpolator [func-point user-points]
   (mapv (lagrange func-point) user-points))
